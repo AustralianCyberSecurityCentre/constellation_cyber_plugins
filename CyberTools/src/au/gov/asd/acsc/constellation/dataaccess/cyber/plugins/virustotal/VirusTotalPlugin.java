@@ -28,7 +28,9 @@ import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.security.proxy.ConstellationHttpProxySelector;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
@@ -41,9 +43,11 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -70,7 +74,6 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("VirusTotalPlugin=VirusTotal")
 public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
-    private static final Logger LOGGER = Logger.getLogger(VirusTotalPlugin.class.getName());
     private String VT_URL = null;
     private String VT_API_KEY = null;
     boolean isEnabled = true;
@@ -100,7 +103,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
     }
 
     public static final String SHOW_AV_RESULTS_PARAMETER = PluginParameter.buildId(VirusTotalPlugin.class, "showAVResults");
-    public static final String FLAG_POSITIVES_ONLY_PARAMETER = PluginParameter.buildId(VirusTotalPlugin.class, "flagPositivesOnly");
+    public static final String HASH_PIVOTS_PARAMETER_ID = PluginParameter.buildId(VirusTotalPlugin.class, "hashPivots");
 
     @Override
     public PluginParameters createParameters() {
@@ -109,22 +112,41 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         final PluginParameter<BooleanParameterType.BooleanParameterValue> showAVResults = BooleanParameterType.build(SHOW_AV_RESULTS_PARAMETER);
         showAVResults.setName("Show AntiVirus Results");
         showAVResults.setDescription("Show AntiVirus Results");
-        showAVResults.setBooleanValue(true);
+        showAVResults.setBooleanValue(false);
         params.addParameter(showAVResults);
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> flagPositivesOnly = BooleanParameterType.build(FLAG_POSITIVES_ONLY_PARAMETER);
-        flagPositivesOnly.setName("Flag Positives only");
-        flagPositivesOnly.setDescription("Flag Positives only");
-        flagPositivesOnly.setBooleanValue(true);
-        params.addParameter(flagPositivesOnly);
+        final PluginParameter hashPivotOptions = MultiChoiceParameterType.build(HASH_PIVOTS_PARAMETER_ID);
+        hashPivotOptions.setName("Pivot on Hash");
+        ArrayList<String> hashPivots = new ArrayList<>();
+        
+        //hashPivots.add("ssdeep");
+        hashPivots.add("imphash");
+        hashPivots.add("vHash");
+        hashPivots.add("similar to");
+        hashPivots.sort(null);
+        
+        MultiChoiceParameterType.setOptions(hashPivotOptions, hashPivots);
+        
+        MultiChoiceParameterType.setChoices(hashPivotOptions, new ArrayList<String>());
+        params.addParameter(hashPivotOptions);
 
         return params;
     }
 
-    private Object getQuery(String query, PluginInteraction interaction) {
-
+    private JSONObject getQuery(String query, PluginInteraction interaction)
+    {
+        return getQuery(query, interaction, null);
+    }
+    
+    private JSONObject getQuery(String query, PluginInteraction interaction, String cursor) {
         JSONParser parser = new JSONParser();
-        Object obj = null;
+        JSONObject obj = null;
+        String c = "";
+        if (cursor != null)
+        {
+            c = String.format("&cursor=%s", cursor);
+        }
+
         try {
             ProxySelector sel = ConstellationHttpProxySelector.getDefault();
             List<Proxy> proxies = sel.select(new URI(query));
@@ -148,8 +170,8 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                     }
                 }
                 CloseableHttpClient client = clientBuilder.build();
-
-                HttpGet get = new HttpGet(query);
+                HttpGet get = new HttpGet(query + c);
+                get.addHeader("x-apikey", VT_API_KEY);
                 CloseableHttpResponse resp;
                 try {
                     resp = client.execute(get);
@@ -158,14 +180,32 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                         interaction.notify(PluginNotificationLevel.FATAL, "Failed to query the VirusTotal web service " + ex.getMessage());
                     }
                     ex.printStackTrace();
-                    return Boolean.FALSE;
+                    return null;
                 }
 
                 try {
                     if (resp.getStatusLine().getStatusCode() == 200) {
                         String answer = EntityUtils.toString(resp.getEntity());
                         try {
-                            obj = parser.parse(answer);
+                            obj = (JSONObject)parser.parse(answer);
+                            if (obj.containsKey("meta"))
+                            {
+                                JSONObject meta = (JSONObject)obj.get("meta");
+                                if (meta.containsKey("cursor"))
+                                {
+                                    cursor = (String)meta.get("cursor");
+                                    
+                                    if (cursor != null && !cursor.isEmpty())
+                                    {
+                                        JSONObject o1 = getQuery(query, interaction, cursor);
+                                        JSONArray a1 = (JSONArray)obj.get("data");
+                                        JSONArray a2 = (JSONArray)o1.get("data");
+                                        a1.addAll(a2);
+                                        obj.put("data", a1);
+                                    }
+                                }
+                            }
+
                         } catch (ParseException ex) {
                             if (interaction != null) {
                                 interaction.notify(PluginNotificationLevel.FATAL, "Could not parse the VirusTotal web service response");
@@ -173,10 +213,21 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                             return null;
                         }
                     } 
-                    else if (resp.getStatusLine().getStatusCode() == 403)
+                    else if (resp.getStatusLine().getStatusCode() == 204)
                     {
-                        interaction.notify(PluginNotificationLevel.FATAL, "Could authenticate to the VirusTotal service");
-                        return Boolean.FALSE;
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                        return getQuery(query, interaction);
+                    }
+                    else if (resp.getStatusLine().getStatusCode() == 404)
+                    {
+                        JSONObject notFound = new JSONObject();
+                        notFound.put("response_code", 0);
+
+                        return notFound;
                     }
                     else {
                         if (interaction != null) {
@@ -185,6 +236,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                         return null;
                     }
                 } catch (IOException ex) {
+                    ex.printStackTrace();
                     if (interaction != null) {
                         interaction.notify(PluginNotificationLevel.FATAL, "Could not read from the VirusTotal web service.");
                     }
@@ -201,132 +253,461 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         }
         return obj;
     }
-
-
-    private void drawHash(GraphRecordStore result, String hashValue, String hashType, String md5, String sha256, String sha1, String filename) {
-        if (md5 == null || md5.trim().isEmpty()) {
-            return;
+    
+    private Hash drawHash(String end, GraphRecordStore result, JSONObject hash, boolean showAVResults)
+    {
+        Hash ret = new Hash();
+        JSONObject attributes = (JSONObject)hash.get("attributes");
+        String sha1 = (String) attributes.get("sha1");
+        String sha256 = (String) attributes.get("sha256");
+        String md5 = (String) attributes.get("md5");
+        ret.setMd5(md5);
+        Long firstSeen = (Long)attributes.get("first_submission_date");
+        Long lastSeen = (Long)attributes.get("last_submission_date");
+        JSONArray names = (JSONArray) attributes.get("names");
+        ArrayList<String> filenames = new ArrayList<>();
+        if (names != null)
+        {
+            for (Object b : names)
+            {
+                if (b != null)
+                {
+                    filenames.add((String)b);
+                }
+            }
         }
-
-        result.add();
-        result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
-        result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, hashType);
+        result.set(end + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+        result.set(end + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
 
         if (sha1 != null) {
-            result.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.SHA1, sha1);
+            result.set(end + CyberConcept.VertexAttribute.SHA1, sha1);
         }
         if (sha256 != null) {
-            result.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.SHA256, sha256);
+            result.set(end + CyberConcept.VertexAttribute.SHA256, sha256);
         }
-        result.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.MD5, md5);
+        result.set(end + CyberConcept.VertexAttribute.MD5, md5);
         
-        if (filename != null) {
-            result.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.FILENAME, filename);
+        String ssDeep = (String)attributes.get("ssdeep");
+        String vHash = (String)attributes.get("vhash");
+        ret.setSsdeep(ssDeep);
+        ret.setVhash(vHash);
+        if (ssDeep != null)
+        {
+            result.set(end + VirusTotalConcept.VertexAttribute.SSDEEP, ssDeep);
+        }
+        if (vHash != null)
+        {
+            result.set(end + VirusTotalConcept.VertexAttribute.VHASH, vHash);
+        }
+        if (attributes.containsKey("pe_info"))
+        {
+            JSONObject peInfo = (JSONObject)attributes.get("pe_info");
+            if (peInfo.containsKey("imphash"))
+            {
+                ret.setImphash((String)peInfo.get("imphash"));
+                result.set(end + VirusTotalConcept.VertexAttribute.IMPHASH, (String)peInfo.get("imphash"));
+            }
         }
 
+        if (attributes.containsKey("magic"))
+        {
+            result.set(end + AnalyticConcept.VertexAttribute.COMMENT, (String)attributes.get("magic"));
+        }
+        
+        result.set(end + TemporalConcept.VertexAttribute.FIRST_SEEN, TemporalFormatting.formatAsZonedDateTime(Instant.ofEpochSecond(firstSeen).atOffset(ZoneOffset.UTC)));   
+        result.set(end + TemporalConcept.VertexAttribute.LAST_SEEN, TemporalFormatting.formatAsZonedDateTime(Instant.ofEpochSecond(lastSeen).atOffset(ZoneOffset.UTC)));
+        result.set(end + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+        result.set(end + CyberConcept.VertexAttribute.FILENAME, String.join("\n", filenames) );
+
+        // last analysis results
+        JSONObject lastAnalysisStats = (JSONObject)attributes.get("last_analysis_stats");
+        result.set(end + VirusTotalConcept.VertexAttribute.FAILURE_COUNT, (Long)lastAnalysisStats.get("failure"));
+        result.set(end + VirusTotalConcept.VertexAttribute.CONFIRMED_TIMEOUT_COUNT, (Long)lastAnalysisStats.get("confirmed-timeout"));
+        result.set(end + VirusTotalConcept.VertexAttribute.HARMLESS_COUNT, (Long)lastAnalysisStats.get("harmless"));
+        result.set(end + VirusTotalConcept.VertexAttribute.MALICIOUS_COUNT, (Long)lastAnalysisStats.get("malicious"));
+        result.set(end + VirusTotalConcept.VertexAttribute.SUSPICIOUS_COUNT, (Long)lastAnalysisStats.get("suspicious"));
+        result.set(end + VirusTotalConcept.VertexAttribute.TIMEOUT_COUNT, (Long)lastAnalysisStats.get("timeout"));
+        result.set(end + VirusTotalConcept.VertexAttribute.TYPE_UNSUPPORTED_COUNT, (Long)lastAnalysisStats.get("type-unsupported"));
+        result.set(end + VirusTotalConcept.VertexAttribute.UNDETECTED_COUNT, (Long)lastAnalysisStats.get("undetected"));
+
+        if (showAVResults) {
+            JSONObject results = (JSONObject)attributes.get("last_analysis_results");
+            for (Object a : results.keySet())
+            {                        
+                JSONObject avResult = (JSONObject)results.get((String)a);
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+
+                result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, String.format("%s-%s", md5, (String)avResult.get("engine_name")));
+                result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, VirusTotalConcept.VertexType.AV_RESULT);
+                result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.AV_ENGINE, (String)avResult.get("engine_name"));
+                result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, PLUGIN_NAME);
+                result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.CATEGORY,  (String)avResult.get("category"));
+                result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.METHOD,  (String)avResult.get("method"));
+                result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.RESULT, (String) avResult.get("result"));
+                result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.VERSION, (String) avResult.get("engine_version"));
+
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Yellow");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");
+            }   
+        }
+        return ret;
     }
 
-    private void queryHash(String hashValue, String hashType, GraphRecordStore result, boolean showAVResults, boolean flagPositivesOnly, PluginInteraction interaction) {
-        String VT_BASE_URL = VT_URL + "/vtapi/v2/file/report?resource=";
-        String url = String.format("%s%s&apikey=%s", VT_BASE_URL, UrlEscapers.urlFormParameterEscaper().escape(hashValue), VT_API_KEY);
+    private Hash queryHash(String hashValue, String hashType, GraphRecordStore result, boolean showAVResults, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/intelligence/search?query=%s&limit=300", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(hashValue));
+        Object r = getQuery(url, interaction);
+        int count = 0;
+        Hash ret = null;
+
+        while (r == null && !(r instanceof Boolean) && count < 2) {
+            r = getQuery(url, interaction);
+            count++;
+        }
+        if (r == null || r instanceof Boolean) {
+            return null;
+        }
+        JSONObject res = (JSONObject) r;
+     
+        boolean added = false;
+        JSONArray data = (JSONArray)res.get("data");
+        for (Object o : data)
+        {
+            added = true;
+            JSONObject element = (JSONObject)o;
+            
+            result.add();
+            ret = drawHash(GraphRecordStoreUtilities.SOURCE, result, element, showAVResults);
+            
+            if (!ret.getMd5().equalsIgnoreCase(hashValue))
+            {
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, hashType);
+                result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
+                result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, hashType);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.SIMILARITY);
+            }
+
+            // now draw the domains
+            url = String.format("%s/api/v3/files/%s/contacted_domains", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(hashValue));
+            Object d = getQuery(url, interaction);
+            count = 0;
+
+            while (r == null && !(r instanceof Boolean) && count < 2) {
+                r = getQuery(url, interaction);
+                count++;
+            }
+            if (r != null && !(r instanceof Boolean)) {
+                JSONArray domains = (JSONArray)((JSONObject) d).get("data");
+                for (Object d1 : domains)
+                {
+                    JSONObject domain = (JSONObject)d1;
+                    result.add();
+                    result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ret.getMd5());
+                    result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+
+                    drawDomain(GraphRecordStoreUtilities.DESTINATION, result, domain);
+                }
+            }
+            // draw ips
+
+            url = String.format("%s/api/v3/files/%s/contacted_ips", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(hashValue));
+            d = getQuery(url, interaction);
+            count = 0;
+
+            while (r == null && !(r instanceof Boolean) && count < 2) {
+                r = getQuery(url, interaction);
+                count++;
+            }
+            if (r != null && !(r instanceof Boolean)) {
+                JSONArray ips = (JSONArray)((JSONObject) d).get("data");
+                for (Object d1 : ips)
+                {
+                    JSONObject ip = (JSONObject)d1;
+
+                    result.add();
+                    result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ret.getMd5());
+                    result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+
+                    drawIP(GraphRecordStoreUtilities.DESTINATION, result, ip);
+                }
+            }
+        } 
+        if (!added) {
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, hashType);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+
+        }
+        return ret;
+    }
+    
+    private void drawIP(String end, GraphRecordStore result, JSONObject data)
+    {
+        String name = (String)data.get("id");
+        JSONObject att = (JSONObject)data.get("attributes");
+        String whois = (String)att.get("whois");
+        
+        result.set(end + VisualConcept.VertexAttribute.IDENTIFIER, name);
+        String type = AnalyticConcept.VertexType.IP_ADDRESS.getName();
+        if (name.contains("."))
+        {
+            type = AnalyticConcept.VertexType.IPV4.getName();
+        }
+        else if (name.contains(":"))
+        {
+            type = AnalyticConcept.VertexType.IPV6.getName();
+        }
+        result.set(end + AnalyticConcept.VertexAttribute.TYPE, type);
+        result.set(end + "Whois", whois);
+        if (att.containsKey("country"))
+        {
+            result.set(end + SpatialConcept.VertexAttribute.COUNTRY, (String)att.get("country"));
+        }
+    }
+    
+    private void drawDomain(String end, GraphRecordStore result, JSONObject data)
+    {
+        String name = (String)data.get("id");
+        JSONObject att = (JSONObject)data.get("attributes");
+        String whois = (String)att.get("whois");
+
+        result.set(end + VisualConcept.VertexAttribute.IDENTIFIER, name);
+        result.set(end + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
+        result.set(end + "Whois", whois);
+    }
+    
+    private void pivotVHash(String md5, String vhash, boolean showAVResults, GraphRecordStore result, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/intelligence/search?query=vhash:%s&limit=300", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(String.format("\"%s\"",vhash) ) );
         Object r = getQuery(url, interaction);
         int count = 0;
 
-        while (r == null && !(r instanceof Boolean) && count < 10) {
+        while (r == null && !(r instanceof Boolean) && count < 2) {
             r = getQuery(url, interaction);
             count++;
         }
         if (r == null || r instanceof Boolean) {
             return;
         }
-        JSONObject res = (JSONObject) r;
-        result.add();
-        result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
-        result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, hashType);
-
-        if (res.containsKey("response_code") && ((Long) res.get("response_code")).intValue() == 1) {
-
-            String sha1 = (String) res.get("sha1");
-            String sha256 = (String) res.get("sha256");
-            String md5 = (String) res.get("md5");
-            int hits = ((Long) res.get("positives")).intValue();
-
-            String firstSeen = (String) res.get("first_seen");
-            String lastSeen = (String) res.get("last_seen");
-
-            JSONArray names = (JSONArray) res.get("names");
-
-            String filenames = "";
-            if (names != null) {
-                for (Object o : names) {
-                    filenames += o.toString() + ", ";
-                }
-            }
-
-            if (!filenames.isEmpty()) {
-                filenames = filenames.substring(0, filenames.length() - 2);
-            }
-
+        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        if (data.isEmpty()) 
+        {
             result.add();
-            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
-            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, hashType);
-            result.set(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.FIRST_SEEN, TemporalFormatting.completeZonedDateTimeString(firstSeen));
-            result.set(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.LAST_SEEN, TemporalFormatting.completeZonedDateTimeString(lastSeen));
-            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
-
-            if ((!flagPositivesOnly) || (flagPositivesOnly && hits > 0)) {
-
-                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
-                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.AV_HITS, hits);
-
-                JSONObject scans = (JSONObject) res.get("scans");
-                String avResults = "";
-
-                for (Object key : scans.keySet()) {
-                    JSONObject scan = (JSONObject) scans.get(key);
-                    if ((boolean) scan.get("detected")) {
-                        avResults += key.toString() + ":" + (String) scan.get("result") + "\n";
-                    }
-                }
-                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.COMMENT, avResults);
-                if (avResults.isEmpty()) {
-                    result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.DETECTED, false);
-                } else {
-                    result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.DETECTED, true);
-                }
-
-                drawHash(result, hashValue, hashType, md5, sha256, sha1, filenames);
-
-                if (showAVResults) {
-                    // add Relationships
-
-                    for (Object key : scans.keySet()) {
-                        JSONObject scan = (JSONObject) scans.get(key);
-                        String nodeKey = key.toString() + ":" + (String) scan.get("result");
-                        if ((boolean) scan.get("detected") || !flagPositivesOnly) {
-                            result.add();
-                            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, hashValue);
-                            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, hashType);
-
-                            result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, nodeKey);
-                            result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, VirusTotalConcept.VertexType.AV_RESULT);
-                            result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.AV_ENGINE, key.toString());
-                            result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, PLUGIN_NAME);
-                            result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.DETECTED, (boolean) scan.get("detected"));
-                            result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.RESULT, (String) scan.get("result"));
-                            result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.VERSION, (String) scan.get("version"));
-
-                            result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Yellow");
-                            result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, nodeKey + ":" + hashValue);
-                            result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");
-                        }
-                    }
-                }
-            }
-
-        } else {
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
             result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+        }
+        else
+        {
+            for (Object a : data)
+            {
+                JSONObject h = (JSONObject)a;
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
 
+                drawHash(GraphRecordStoreUtilities.DESTINATION, result, h, showAVResults);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, "vHash match");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            }
+        }
+    }
+    
+    private void pivotImpHash(String md5, String imphash, boolean showAVResults, GraphRecordStore result, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/intelligence/search?query=imphash:%s&limit=300", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(String.format("\"%s\"",imphash) ) );
+        Object r = getQuery(url, interaction);
+        int count = 0;
+
+        while (r == null && !(r instanceof Boolean) && count < 2) {
+            r = getQuery(url, interaction);
+            count++;
+        }
+        if (r == null || r instanceof Boolean) {
+            return;
+        }
+        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        if (data.isEmpty()) 
+        {
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+        }
+        else
+        {
+            for (Object a : data)
+            {
+                JSONObject h = (JSONObject)a;
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+
+                drawHash(GraphRecordStoreUtilities.DESTINATION, result, h, showAVResults);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, "imphash match");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            }
+        }
+    }
+    
+    private void pivotSSDeep(String md5, String ssdeep, boolean showAVResults, GraphRecordStore result, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/intelligence/search?query=ssdeep:%%22%s+40%%22&limit=300", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(String.format("%s",ssdeep) ) );
+        Object r = getQuery(url, interaction);
+        int count = 0;
+
+        while (r == null && !(r instanceof Boolean) && count < 2) {
+            r = getQuery(url, interaction);
+            count++;
+        }
+        if (r == null || r instanceof Boolean) {
+            return;
+        }
+        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        if (data.isEmpty()) 
+        {
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+        }
+        else
+        {
+            for (Object a : data)
+            {
+                JSONObject h = (JSONObject)a;
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+
+                drawHash(GraphRecordStoreUtilities.DESTINATION, result, h, showAVResults);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, "ssdeep match");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            }
+        }
+    }
+    
+    private void pivotSimilarTo(String md5, boolean showAVResults, GraphRecordStore result, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/intelligence/search?query=similar-to:%s&limit=300", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(md5) );
+        Object r = getQuery(url, interaction);
+        int count = 0;
+
+        while (r == null && !(r instanceof Boolean) && count < 2) {
+            r = getQuery(url, interaction);
+            count++;
+        }
+        if (r == null || r instanceof Boolean) {
+            return;
+        }
+        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        if (data.isEmpty()) 
+        {
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+        }
+        else
+        {
+            for (Object a : data)
+            {
+                JSONObject h = (JSONObject)a;
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
+                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
+
+                drawHash(GraphRecordStoreUtilities.DESTINATION, result, h, showAVResults);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, "Similar to match");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            }
+        }
+    }
+    
+    private void queryDomain(String domain, GraphRecordStore result, boolean showAVResults, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/domains/%s/communicating_files", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(domain));
+        Object r = getQuery(url, interaction);
+        int count = 0;
+
+        while (r == null && !(r instanceof Boolean) && count < 2) {
+            r = getQuery(url, interaction);
+            count++;
+        }
+        if (r == null || r instanceof Boolean) {
+            return;
+        }
+        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        
+        if (data.isEmpty()) 
+        {
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+        }
+        else
+        {
+            for (Object a : data)
+            {
+                JSONObject hash = (JSONObject)a;
+
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
+                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+
+                drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            }
+        }
+    }
+    
+    private void queryIP(String ip, String type, GraphRecordStore result, boolean showAVResults, PluginInteraction interaction) {
+        String url = String.format("%s/api/v3/ip_addresses/%s/communicating_files", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(ip));
+        Object r = getQuery(url, interaction);
+        int count = 0;
+
+        while (r == null && !(r instanceof Boolean) && count < 2) {
+            r = getQuery(url, interaction);
+            count++;
+        }
+        if (r == null || r instanceof Boolean) {
+            return;
+        }
+        
+        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        
+        if (data.isEmpty()) 
+        {
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, false);
+        }
+        else
+        {
+            for (Object a : data)
+            {
+                JSONObject hash = (JSONObject)a;
+
+                result.add();
+                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
+                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
+
+                drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
+                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            }
         }
     }
 
@@ -346,10 +727,16 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         if (VT_URL == null || VT_URL.isEmpty()) {
             VT_URL = "https://virustotal.com";
         }
+        if (VT_URL.endsWith("/"))
+        {
+            VT_URL = VT_URL.substring(0, VT_URL.length()-1);
+        }
 
         boolean showAVResults = params.get(SHOW_AV_RESULTS_PARAMETER).getBooleanValue();
-        boolean flagPositivesOnly = params.get(FLAG_POSITIVES_ONLY_PARAMETER).getBooleanValue();
+        final MultiChoiceParameterType.MultiChoiceParameterValue hashPivots = parameters.getMultiChoiceValue(HASH_PIVOTS_PARAMETER_ID);
 
+        List<String> pivots = hashPivots.getChoices();
+        
         query.reset();
 
         int i = 0;
@@ -359,15 +746,46 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                 String label = query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL);
                 String type = label.substring(label.lastIndexOf('<') + 1, label.lastIndexOf('>'));
                 String searchValue = query.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER);
-
+                
                 interaction.setProgress(i, query.size(), "Querying on " + searchValue, true);
 
                 if (type.equalsIgnoreCase(AnalyticConcept.VertexType.HASH.toString())
                         || type.equalsIgnoreCase(AnalyticConcept.VertexType.MD5.getName())
                         || type.equalsIgnoreCase(AnalyticConcept.VertexType.SHA1.getName())
                         || type.equalsIgnoreCase(AnalyticConcept.VertexType.SHA256.getName())) {
-                    queryHash(searchValue, type, result, showAVResults, flagPositivesOnly, interaction);
+                    Hash hash = queryHash(searchValue, type, result, showAVResults, interaction);
+                    
+                    if (hash != null && pivots.size() > 0)
+                    {
+                        
+                        if (pivots.contains("ssdeep") && hash.getSsdeep() != null)
+                        {
+                            pivotSSDeep(hash.getMd5(), hash.getSsdeep(), showAVResults, result, interaction);
+                        }
+                        if (pivots.contains("vHash") && hash.getVhash() != null)
+                        {
+                            pivotVHash(hash.getMd5(), hash.getVhash(), showAVResults, result, interaction);
+                        }
+                        if (pivots.contains("imphash") && hash.getImphash() != null)
+                        {
+                            pivotImpHash(hash.getMd5(), hash.getImphash(), showAVResults, result, interaction);
+                        }
+                        if (pivots.contains("Similar to") && hash.getImphash() != null)
+                        {
+                            pivotSimilarTo(hash.getMd5(), showAVResults, result, interaction);
+                        }
+                    }
                 }
+                else if (type.equalsIgnoreCase(AnalyticConcept.VertexType.HOST_NAME.getName())) {
+                    queryDomain(searchValue, result, showAVResults, interaction);
+                }
+                else if (type.equalsIgnoreCase(AnalyticConcept.VertexType.IPV4.getName()) ||
+                        type.equalsIgnoreCase(AnalyticConcept.VertexType.IPV6.getName()) ||
+                        type.equalsIgnoreCase(AnalyticConcept.VertexType.IP_ADDRESS.getName())) {
+                    queryIP(searchValue, type, result, showAVResults, interaction);
+                }
+                
+                
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }

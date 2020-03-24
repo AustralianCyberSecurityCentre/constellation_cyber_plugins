@@ -53,11 +53,37 @@ public class VirusTotalConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute RESULT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Result")
                 .build();
+        public static final SchemaAttribute VHASH = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "vHash")
+                .build();
+        public static final SchemaAttribute SSDEEP = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "ssdeep")
+                .build();
+        public static final SchemaAttribute IMPHASH = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "imphash")
+                .build();
+        public static final SchemaAttribute CATEGORY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Category")
+                .build();
+        public static final SchemaAttribute METHOD = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Method")
+                .build();
         public static final SchemaAttribute VERSION = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Version")
                 .build();
         public static final SchemaAttribute AV_ENGINE = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "AV Engine")
                 .build();
         public static final SchemaAttribute AV_HITS = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "AV Hits")
+                .build();
+        public static final SchemaAttribute FAILURE_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Failure Count")
+                .build();
+        public static final SchemaAttribute CONFIRMED_TIMEOUT_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Confirmed Timeout Count")
+                .build();
+        public static final SchemaAttribute HARMLESS_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Harmless Count")
+                .build();
+        public static final SchemaAttribute MALICIOUS_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Malicious Count")
+                .build();
+        public static final SchemaAttribute SUSPICIOUS_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Suspicious Count")
+                .build();
+        public static final SchemaAttribute TIMEOUT_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Timeout Count")
+                .build();
+        public static final SchemaAttribute TYPE_UNSUPPORTED_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Type unsupported Count")
+                .build();
+        public static final SchemaAttribute UNDETECTED_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Undetected Count")
                 .build();
     }
 
@@ -66,12 +92,14 @@ public class VirusTotalConcept extends SchemaConcept {
         public static final SchemaVertexType AV_RESULT = new SchemaVertexType.Builder("AV Result")
                 .setForegroundIcon(AnalyticIconProvider.FINGERPRINT)
                 .build();
+        
     }
 
     @Override
     public List<SchemaVertexType> getSchemaVertexTypes() {
         final List<SchemaVertexType> schemaVertexTypes = new ArrayList<>();
         schemaVertexTypes.add(VertexType.AV_RESULT);
+
         return schemaVertexTypes;
     }
 
@@ -80,10 +108,23 @@ public class VirusTotalConcept extends SchemaConcept {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(VertexAttribute.HAS_VIRUS_TOTAL_ENTRY);
         schemaAttributes.add(VertexAttribute.DETECTED);
+        schemaAttributes.add(VertexAttribute.CATEGORY);
+        schemaAttributes.add(VertexAttribute.METHOD);
         schemaAttributes.add(VertexAttribute.RESULT);
         schemaAttributes.add(VertexAttribute.VERSION);
         schemaAttributes.add(VertexAttribute.AV_ENGINE);
         schemaAttributes.add(VertexAttribute.AV_HITS);
+        schemaAttributes.add(VertexAttribute.VHASH);
+        schemaAttributes.add(VertexAttribute.SSDEEP);
+        schemaAttributes.add(VertexAttribute.IMPHASH);
+        schemaAttributes.add(VertexAttribute.CONFIRMED_TIMEOUT_COUNT);
+        schemaAttributes.add(VertexAttribute.FAILURE_COUNT);
+        schemaAttributes.add(VertexAttribute.HARMLESS_COUNT);
+        schemaAttributes.add(VertexAttribute.MALICIOUS_COUNT);
+        schemaAttributes.add(VertexAttribute.SUSPICIOUS_COUNT);
+        schemaAttributes.add(VertexAttribute.TIMEOUT_COUNT);
+        schemaAttributes.add(VertexAttribute.TYPE_UNSUPPORTED_COUNT);
+        schemaAttributes.add(VertexAttribute.UNDETECTED_COUNT);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
 }

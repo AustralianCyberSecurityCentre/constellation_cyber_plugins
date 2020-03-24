@@ -53,6 +53,7 @@ public final class ACSCOptionsPanelController extends OptionsPanelController {
         acscOptionsPanel.setMaxmindConnectionTypeDB(prefs.get(ACSCPreferenceKeys.MAXMIND_CONNECTION_TYPE_DIR, ""));
         acscOptionsPanel.setVirusTotalUrl(prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_URL, "https://virustotal.com"));
         acscOptionsPanel.setVirusTotalAPIKey(prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, ""));
+        acscOptionsPanel.setGreyNoiseAPIKey(prefs.get(ACSCPreferenceKeys.GREYNOISE_API_KEY, ""));
 
     }
 
@@ -76,6 +77,7 @@ public final class ACSCOptionsPanelController extends OptionsPanelController {
                 prefs.put(ACSCPreferenceKeys.MAXMIND_CONNECTION_TYPE_DIR, acscOptionsPanel.getMaxmindConnectionTypeDB());
                 prefs.put(ACSCPreferenceKeys.VIRUS_TOTAL_URL, acscOptionsPanel.getVirusTotalUrl());
                 prefs.put(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, acscOptionsPanel.getVirusTotalAPIKey());
+                prefs.put(ACSCPreferenceKeys.GREYNOISE_API_KEY, acscOptionsPanel.getGreyNoiseAPIKey());
             }
         }
     }
@@ -102,6 +104,7 @@ public final class ACSCOptionsPanelController extends OptionsPanelController {
                 && (acscOptionsPanel.getMaxmindDomainDB() == null ? prefs.get(ACSCPreferenceKeys.MAXMIND_DOMAIN_DIR, "") == null : acscOptionsPanel.getMaxmindDomainDB().equals(prefs.get(ACSCPreferenceKeys.MAXMIND_DOMAIN_DIR, "")))
                 && (acscOptionsPanel.getVirusTotalUrl() == null ? prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_URL, "") == null : acscOptionsPanel.getVirusTotalUrl().equals(prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_URL, "")))
                 && (acscOptionsPanel.getVirusTotalAPIKey() == null ? prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, "") == null : acscOptionsPanel.getVirusTotalAPIKey().equals(prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, "")))
+                && (acscOptionsPanel.getGreyNoiseAPIKey() == null ? prefs.get(ACSCPreferenceKeys.GREYNOISE_API_KEY, "") == null : acscOptionsPanel.getGreyNoiseAPIKey().equals(prefs.get(ACSCPreferenceKeys.GREYNOISE_API_KEY, "")))
                 && (acscOptionsPanel.getMaxmindConnectionTypeDB() == null ? prefs.get(ACSCPreferenceKeys.MAXMIND_CONNECTION_TYPE_DIR, "") == null : acscOptionsPanel.getMaxmindConnectionTypeDB().equals(prefs.get(ACSCPreferenceKeys.MAXMIND_CONNECTION_TYPE_DIR, ""))));
 
         return changed;

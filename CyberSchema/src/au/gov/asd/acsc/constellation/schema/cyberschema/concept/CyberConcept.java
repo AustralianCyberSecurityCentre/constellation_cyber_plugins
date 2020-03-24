@@ -118,6 +118,10 @@ public class CyberConcept extends SchemaConcept {
                 .setSuperType(INCIDENT_TYPE)
                 .setForegroundIcon(AnalyticIconProvider.FINGERPRINT)
                 .build();
+        
+        public static final SchemaVertexType JA3 = new SchemaVertexType.Builder("JA3")
+                .setForegroundIcon(AnalyticIconProvider.SIGNAL)
+                .build();
 
         public static final SchemaVertexType FEATURE = new SchemaVertexType.Builder("Feature")
                 .setForegroundIcon(CyberIconProvider.FEATURE)
@@ -187,6 +191,7 @@ public class CyberConcept extends SchemaConcept {
         schemaVertexTypes.add(VertexType.OBSERVATION);
         schemaVertexTypes.add(VertexType.CYBER_EVENT);
         schemaVertexTypes.add(VertexType.ALERT_SOURCE);
+        schemaVertexTypes.add(VertexType.JA3);
         schemaVertexTypes.add(VertexType.ASSET);
         schemaVertexTypes.add(VertexType.PROJECT);
         schemaVertexTypes.add(VertexType.BANNER);
@@ -212,6 +217,10 @@ public class CyberConcept extends SchemaConcept {
 
         public static final SchemaAttribute NATIONALITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Nationality")
                 .setDescription("Nationality")
+                .build();
+        
+        public static final SchemaAttribute OPERATING_SYSTEM = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Operating System")
+                .setDescription("Operating System")
                 .build();
 
         public static final SchemaAttribute COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Count")
@@ -248,6 +257,23 @@ public class CyberConcept extends SchemaConcept {
         public static final SchemaAttribute PROTOCOL = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Protocol")
                 .setDescription("Protocol")
                 .build();
+        
+        public static final SchemaAttribute CLASSIFICATION = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Classification")
+                .setDescription("Classification")
+                .build();
+        
+        public static final SchemaAttribute ACTOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Actor")
+                .setDescription("Actor")
+                .build();
+        
+        public static final SchemaAttribute CATEGORY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Category")
+                .setDescription("Category")
+                .build();
+        
+        public static final SchemaAttribute TAGS = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Tags")
+                .setDescription("Tags")
+                .build();
+                
         public static final SchemaAttribute FEATURE_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "Feature Count")
                 .setDescription("Feature Count")
                 .build();
@@ -269,6 +295,11 @@ public class CyberConcept extends SchemaConcept {
         attributes.add(TransactionAttribute.PROTOCOL);
         attributes.add(VertexAttribute.SIGNATURE_ID);
         attributes.add(VertexAttribute.INCIDENT_ID);
+        attributes.add(VertexAttribute.ACTOR);
+        attributes.add(VertexAttribute.TAGS);
+        attributes.add(VertexAttribute.CATEGORY);
+        attributes.add(VertexAttribute.CLASSIFICATION);
+        attributes.add(VertexAttribute.OPERATING_SYSTEM);
         attributes.add(VertexAttribute.INCIDENT_TYPE);
         attributes.add(VertexAttribute.STATUS);
         attributes.add(VertexAttribute.NATIONALITY);

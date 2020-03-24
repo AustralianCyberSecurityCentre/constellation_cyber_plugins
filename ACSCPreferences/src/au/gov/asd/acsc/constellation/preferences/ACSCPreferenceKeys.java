@@ -31,6 +31,8 @@ public final class ACSCPreferenceKeys {
 
     public static final String VIRUS_TOTAL_URL = "virusTotalUrl";
     public static final String VIRUS_TOTAL_API_KEY = "virusTotalAPIKey";
+    
+    public static final String GREYNOISE_API_KEY = "greyNoiseAPIKey";
 
     private ACSCPreferenceKeys() {
     }
