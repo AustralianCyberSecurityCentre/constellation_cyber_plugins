@@ -298,7 +298,7 @@ public class URLHausPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     String status = (String)res.get("query_status");
                     if (status.equalsIgnoreCase("ok"))
                     {
-                        String firstSeen = (String)res.get("firstseen");
+                        String firstSeen = ((String)res.get("firstseen")).replace(" UTC", "");
                         int urlCount = Integer.parseInt((String)res.get("url_count"));
                         JSONObject blacklists = (JSONObject)res.get("blacklists");
                         String spamhaus = (String)blacklists.get("spamhaus_dbl");
@@ -329,8 +329,8 @@ public class URLHausPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     if (status.equalsIgnoreCase("ok"))
                     {
                         
-                        String firstSeen = (String)res.get("firstseen");
-                        String lastSeen = (String)res.get("lastseen");
+                        String firstSeen = ((String)res.get("firstseen")).replace(" UTC", "");
+                        String lastSeen = ((String)res.get("lastseen")).replace(" UTC", "");
                         String md5 = (String)res.get("md5_hash");
                         String sha256 = (String)res.get("sha256_hash");
                         String fileType = (String)res.get("file_type");
@@ -415,8 +415,8 @@ public class URLHausPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     if (status.equalsIgnoreCase("ok"))
                     {
                         
-                        String firstSeen = (String)res.get("firstseen");
-                        String lastSeen = (String)res.get("lastseen");
+                        String firstSeen = ((String)res.get("firstseen")).replace(" UTC", "");
+                        String lastSeen = ((String)res.get("lastseen")).replace(" UTC", "");
                         
                         
                         results.add();
@@ -446,8 +446,8 @@ public class URLHausPlugin extends RecordStoreQueryPlugin implements DataAccessP
                                     String impHash = (String)url.get("imphash");
                                     String fileType = (String)url.get("file_type");
                                     String fileSize = (String)url.get("file_size");
-                                    String ufirstSeen = (String)url.get("firstseen");
-                                    String ulastSeen = (String)url.get("lastseen");
+                                    String ufirstSeen = ((String)url.get("firstseen")).replace(" UTC", "");
+                                    String ulastSeen = ((String)url.get("lastseen")).replace(" UTC", "");
                                     
                                     results.add();
                                     results.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, identifier);
