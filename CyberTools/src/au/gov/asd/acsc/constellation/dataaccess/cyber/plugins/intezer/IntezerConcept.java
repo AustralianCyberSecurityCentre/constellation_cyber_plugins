@@ -16,8 +16,6 @@
 package au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.intezer;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
@@ -48,34 +46,17 @@ public class IntezerConcept extends SchemaConcept {
 
     public static class VertexAttribute {
 
-        public static final SchemaAttribute FAMILY_TYPE = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Family Type")
-                .build();
-        
-        public static final SchemaAttribute VERDICT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Verdict")
-                .build();
-        
-        public static final SchemaAttribute ANALYSIS_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "Analysis Time")
-                .build();
+
         
     }
 
     public static class VertexType {
-
-        public static final SchemaVertexType PROCESS = new SchemaVertexType.Builder("Process")
-                .setForegroundIcon(AnalyticIconProvider.MICROPROCESSOR)
-                .build();
-        
-        public static final SchemaVertexType CODE_FAMILY = new SchemaVertexType.Builder("Code Family")
-                .setForegroundIcon(AnalyticIconProvider.GROUP)
-                .build();
-        
+ 
     }
 
     @Override
     public List<SchemaVertexType> getSchemaVertexTypes() {
         final List<SchemaVertexType> schemaVertexTypes = new ArrayList<>();
-        schemaVertexTypes.add(VertexType.PROCESS);
-        schemaVertexTypes.add(VertexType.CODE_FAMILY);
         
         return schemaVertexTypes;
     }
@@ -83,9 +64,6 @@ public class IntezerConcept extends SchemaConcept {
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-        schemaAttributes.add(VertexAttribute.FAMILY_TYPE);
-        schemaAttributes.add(VertexAttribute.VERDICT);
-        schemaAttributes.add(VertexAttribute.ANALYSIS_TIME);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
 }

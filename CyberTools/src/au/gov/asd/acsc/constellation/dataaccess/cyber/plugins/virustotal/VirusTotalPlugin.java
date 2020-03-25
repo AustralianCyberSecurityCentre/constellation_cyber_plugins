@@ -293,11 +293,11 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         ret.setVhash(vHash);
         if (ssDeep != null)
         {
-            result.set(end + VirusTotalConcept.VertexAttribute.SSDEEP, ssDeep);
+            result.set(end + CyberConcept.VertexAttribute.SSDEEP, ssDeep);
         }
         if (vHash != null)
         {
-            result.set(end + VirusTotalConcept.VertexAttribute.VHASH, vHash);
+            result.set(end + CyberConcept.VertexAttribute.VHASH, vHash);
         }
         if (attributes.containsKey("pe_info"))
         {
@@ -305,7 +305,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
             if (peInfo.containsKey("imphash"))
             {
                 ret.setImphash((String)peInfo.get("imphash"));
-                result.set(end + VirusTotalConcept.VertexAttribute.IMPHASH, (String)peInfo.get("imphash"));
+                result.set(end + CyberConcept.VertexAttribute.IMPHASH, (String)peInfo.get("imphash"));
             }
         }
 
@@ -345,7 +345,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                 result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, PLUGIN_NAME);
                 result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.CATEGORY,  (String)avResult.get("category"));
                 result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.METHOD,  (String)avResult.get("method"));
-                result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.RESULT, (String) avResult.get("result"));
+                result.set(GraphRecordStoreUtilities.DESTINATION + CyberConcept.VertexAttribute.RESULT, (String) avResult.get("result"));
                 result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.VERSION, (String) avResult.get("engine_version"));
 
                 result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Yellow");

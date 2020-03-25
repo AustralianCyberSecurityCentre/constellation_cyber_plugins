@@ -49,16 +49,7 @@ public class VirusTotalConcept extends SchemaConcept {
 
         public static final SchemaAttribute HAS_VIRUS_TOTAL_ENTRY = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanObjectAttributeDescription.ATTRIBUTE_NAME, "Has Virus Total Entry")
                 .build();
-        public static final SchemaAttribute DETECTED = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanObjectAttributeDescription.ATTRIBUTE_NAME, "Detected")
-                .build();
-        public static final SchemaAttribute RESULT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Result")
-                .build();
-        public static final SchemaAttribute VHASH = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "vHash")
-                .build();
-        public static final SchemaAttribute SSDEEP = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "ssdeep")
-                .build();
-        public static final SchemaAttribute IMPHASH = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "imphash")
-                .build();
+        
         public static final SchemaAttribute CATEGORY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Category")
                 .build();
         public static final SchemaAttribute METHOD = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Method")
@@ -107,16 +98,11 @@ public class VirusTotalConcept extends SchemaConcept {
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(VertexAttribute.HAS_VIRUS_TOTAL_ENTRY);
-        schemaAttributes.add(VertexAttribute.DETECTED);
         schemaAttributes.add(VertexAttribute.CATEGORY);
         schemaAttributes.add(VertexAttribute.METHOD);
-        schemaAttributes.add(VertexAttribute.RESULT);
         schemaAttributes.add(VertexAttribute.VERSION);
         schemaAttributes.add(VertexAttribute.AV_ENGINE);
         schemaAttributes.add(VertexAttribute.AV_HITS);
-        schemaAttributes.add(VertexAttribute.VHASH);
-        schemaAttributes.add(VertexAttribute.SSDEEP);
-        schemaAttributes.add(VertexAttribute.IMPHASH);
         schemaAttributes.add(VertexAttribute.CONFIRMED_TIMEOUT_COUNT);
         schemaAttributes.add(VertexAttribute.FAILURE_COUNT);
         schemaAttributes.add(VertexAttribute.HARMLESS_COUNT);

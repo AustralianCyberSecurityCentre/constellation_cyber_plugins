@@ -480,14 +480,14 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                 results.add();
                 results.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, identifier);
                 results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
-                results.set(GraphRecordStoreUtilities.SOURCE + IntezerConcept.VertexAttribute.VERDICT, verdict);
+                results.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.VERDICT, verdict);
                 results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.COMMENT, subVerdict);
                 results.set(GraphRecordStoreUtilities.SOURCE + ContentConcept.VertexAttribute.URL, analysisUrl);
                 results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.COMMENT, subVerdict);
-                results.set(GraphRecordStoreUtilities.SOURCE + IntezerConcept.VertexAttribute.ANALYSIS_TIME, TemporalFormatting.completeZonedDateTimeString(analysisTime));
+                results.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.ANALYSIS_TIME, TemporalFormatting.completeZonedDateTimeString(analysisTime));
                 
                 results.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, familyName);
-                results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, IntezerConcept.VertexType.CODE_FAMILY);
+                results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, CyberConcept.VertexType.CODE_FAMILY);
                 
                 HashMap<Long, String> pidToDisplayName = new HashMap<>();
                 HashMap<String, Long> md5ToPid = new HashMap<>();
@@ -524,7 +524,7 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
                     results.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.SHA1, sha1);
                     results.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.SHA256, sha256);
-                    results.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.SSDEEP, ssdeep);
+                    results.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.SSDEEP, ssdeep);
                     results.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.SIZE, size);
                     results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, source);
                     results.set(GraphRecordStoreUtilities.SOURCE + "Architecture", architecture);
@@ -575,8 +575,8 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                             results.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, md5);
                             results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
                             results.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, (String)family.get("family_name"));
-                            results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, IntezerConcept.VertexType.CODE_FAMILY);
-                            results.set(GraphRecordStoreUtilities.DESTINATION + IntezerConcept.VertexAttribute.FAMILY_TYPE, (String)family.get("family_type"));
+                            results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, CyberConcept.VertexType.CODE_FAMILY);
+                            results.set(GraphRecordStoreUtilities.DESTINATION + CyberConcept.VertexAttribute.FAMILY_TYPE, (String)family.get("family_type"));
                             results.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.COUNT, (Long)family.get("reused_gene_count"));
                         }
                     }
@@ -591,7 +591,7 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.MD5);
 
                     results.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, displayName);
-                    results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, IntezerConcept.VertexType.PROCESS);
+                    results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, CyberConcept.VertexType.PROCESS);
                 }
                 
                 for (Long pid : pidToPPid.keySet())
@@ -602,10 +602,10 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     {
                         results.add();
                         results.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, displayName);
-                        results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, IntezerConcept.VertexType.PROCESS);
+                        results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, CyberConcept.VertexType.PROCESS);
 
                         results.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, pidToDisplayName.get(pid));
-                        results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, IntezerConcept.VertexType.PROCESS);
+                        results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, CyberConcept.VertexType.PROCESS);
                     }
                     else
                     {
@@ -614,7 +614,7 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                         results.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
 
                         results.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, pidToDisplayName.get(pid));
-                        results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, IntezerConcept.VertexType.PROCESS);
+                        results.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, CyberConcept.VertexType.PROCESS);
                     }
                 }
                 

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.greynoise;
+package au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.urlhaus;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
@@ -28,11 +30,11 @@ import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = SchemaConcept.class)
-public class GreyNoiseConcept extends SchemaConcept {
+public class URLHausConcept extends SchemaConcept {
 
     @Override
     public String getName() {
-        return "GreyNoise";
+        return "URLHaus";
     }
 
     public static class VertexAttribute {
@@ -41,15 +43,21 @@ public class GreyNoiseConcept extends SchemaConcept {
             //ignore
         }
 
-        public static final SchemaAttribute IS_NOISE = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanObjectAttributeDescription.ATTRIBUTE_NAME, "Is Noise")
-                .setDescription("Is flagged as internet noise")
+        public static final SchemaAttribute HAS_ENTRY = new SchemaAttribute.Builder(GraphElementType.VERTEX, BooleanObjectAttributeDescription.ATTRIBUTE_NAME, "Has URLHaus Entry")
+                .setDescription("Has an entry")
+                .build();
+        public static final SchemaAttribute SPAMHAUS_ENTRY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Spamhaus Entry")
+                .build();
+        public static final SchemaAttribute SURBL_ENTRY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "SURBL Entry")
+                .build();
+        public static final SchemaAttribute URL_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerObjectAttributeDescription.ATTRIBUTE_NAME, "URLHaus URL Count")
                 .build();
     }
 
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-        schemaAttributes.add(VertexAttribute.IS_NOISE);
+        schemaAttributes.add(VertexAttribute.HAS_ENTRY);
         
         return schemaAttributes;
     }
