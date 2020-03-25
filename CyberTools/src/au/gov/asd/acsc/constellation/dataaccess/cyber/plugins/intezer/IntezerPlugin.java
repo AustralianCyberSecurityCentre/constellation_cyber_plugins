@@ -15,8 +15,6 @@
  */
 package au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.intezer;
 
-import au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.greynoise.*;
-import au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.maxmind.MaxmindConcept;
 import au.gov.asd.acsc.constellation.dataaccess.cyber.plugins.virustotal.VirusTotalConcept;
 import au.gov.asd.acsc.constellation.preferences.ACSCPreferenceKeys;
 import au.gov.asd.acsc.constellation.schema.cyberschema.concept.CyberConcept;
@@ -30,11 +28,8 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.security.proxy.ConstellationHttpProxySelector;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
@@ -46,9 +41,7 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
@@ -68,10 +61,8 @@ import org.json.simple.parser.ParseException;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
-
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
-import org.python.google.common.collect.Lists;
 
 @ServiceProviders({
     @ServiceProvider(service = DataAccessPlugin.class)
@@ -82,10 +73,7 @@ import org.python.google.common.collect.Lists;
 public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
     
     private String token = null;
-    private String apiBase = "https://analyze.intezer.com/api/v2-0";
-
-
-    public static final String DETAILED_PARAMETER = PluginParameter.buildId(IntezerPlugin.class, "detailedContext");
+    private final String apiBase = "https://analyze.intezer.com/api/v2-0";
 
     @Override
     public String getType() {
@@ -157,12 +145,9 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                     else if (statusCode == 201) {
                         JSONParser parser = new JSONParser();
                         JSONObject o = (JSONObject)parser.parse(EntityUtils.toString(resp.getEntity()));
-                        System.out.println("o is " + o.toJSONString());
                         String resultUrl = (String)o.get("result_url");
-                        System.out.println("Result URL is " + resultUrl);
                         
                         CloseableHttpResponse resp1 = null;
-                        
                         
                         while (resp1 == null || resp1.getStatusLine().getStatusCode() != 200)
                         {
@@ -177,9 +162,7 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                             resp1 = client.execute(get);
                         }
                         
-                        result = (JSONObject)parser.parse(EntityUtils.toString(resp1.getEntity()));
-                        
-                        
+                        result = (JSONObject)parser.parse(EntityUtils.toString(resp1.getEntity())); 
                     }
                     else
                     {
@@ -462,7 +445,6 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
 
         query.reset();
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
-        //boolean detailed = params.get(DETAILED_PARAMETER).getBooleanValue();
         
         if (token == null)
         {
