@@ -27,6 +27,14 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
         initComponents();
     }
     
+    public String getIntezerAPIKey() {
+        return intezerAPIKey.getText();
+    }
+
+    public void setIntezerAPIKey(final String apiKey) {
+        intezerAPIKey.setText(apiKey);
+    }
+    
     public String getGreyNoiseAPIKey() {
         return greyNoiseAPIKey.getText();
     }
@@ -145,6 +153,9 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
         GreyNoisePnl = new javax.swing.JPanel();
         greyNoiseAPIKeyLbl = new javax.swing.JLabel();
         greyNoiseAPIKey = new javax.swing.JTextField();
+        IntezerPnl = new javax.swing.JPanel();
+        intezerAPIKeyLbl = new javax.swing.JLabel();
+        intezerAPIKey = new javax.swing.JTextField();
 
         org.openide.awt.Mnemonics.setLocalizedText(maxmindUserIdLbl, org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.maxmindUserIdLbl.text")); // NOI18N
 
@@ -370,6 +381,33 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.GreyNoisePnl.TabConstraints.tabTitle"), GreyNoisePnl); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(intezerAPIKeyLbl, org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.intezerAPIKeyLbl.text")); // NOI18N
+
+        intezerAPIKey.setText(org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.intezerAPIKey.text")); // NOI18N
+
+        javax.swing.GroupLayout IntezerPnlLayout = new javax.swing.GroupLayout(IntezerPnl);
+        IntezerPnl.setLayout(IntezerPnlLayout);
+        IntezerPnlLayout.setHorizontalGroup(
+            IntezerPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(IntezerPnlLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(intezerAPIKeyLbl)
+                .addGap(63, 63, 63)
+                .addComponent(intezerAPIKey, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        IntezerPnlLayout.setVerticalGroup(
+            IntezerPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(IntezerPnlLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(IntezerPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(intezerAPIKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(intezerAPIKeyLbl))
+                .addContainerGap(333, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.IntezerPnl.TabConstraints.tabTitle"), IntezerPnl); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -455,8 +493,11 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel GreyNoisePnl;
+    private javax.swing.JPanel IntezerPnl;
     private javax.swing.JTextField greyNoiseAPIKey;
     private javax.swing.JLabel greyNoiseAPIKeyLbl;
+    private javax.swing.JTextField intezerAPIKey;
+    private javax.swing.JLabel intezerAPIKeyLbl;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField maxmindAPIKey;
     private javax.swing.JLabel maxmindAPIKeyLbl;
