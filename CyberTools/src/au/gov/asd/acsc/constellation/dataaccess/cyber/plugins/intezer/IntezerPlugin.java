@@ -472,7 +472,6 @@ public class IntezerPlugin extends RecordStoreQueryPlugin implements DataAccessP
                 // failed to get the token
                 return results;
             }
-            System.out.println("Token is " + token);
         }
         
         while (query.next()) {
