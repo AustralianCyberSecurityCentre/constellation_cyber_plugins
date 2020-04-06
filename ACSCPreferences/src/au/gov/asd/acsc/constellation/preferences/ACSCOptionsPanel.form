@@ -16,10 +16,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jTabbedPane1" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jTabbedPane1" pref="935" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -87,7 +87,7 @@
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="maxmindConnectionTypeDB" pref="388" max="32767" attributes="0"/>
+                                          <Component id="maxmindConnectionTypeDB" pref="627" max="32767" attributes="0"/>
                                           <Component id="maxmindDomainDB" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -352,7 +352,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="virusTotalAPIKey" max="32767" attributes="0"/>
-                          <Component id="virusTotalUrl" pref="532" max="32767" attributes="0"/>
+                          <Component id="virusTotalUrl" pref="778" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -425,7 +425,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="greyNoiseAPIKeyLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                      <Component id="greyNoiseAPIKey" pref="539" max="32767" attributes="0"/>
+                      <Component id="greyNoiseAPIKey" pref="778" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -478,7 +478,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="intezerAPIKeyLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                      <Component id="intezerAPIKey" pref="555" max="32767" attributes="0"/>
+                      <Component id="intezerAPIKey" pref="778" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>

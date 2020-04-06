@@ -133,18 +133,26 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         return params;
     }
 
-    private JSONObject getQuery(String query, PluginInteraction interaction)
+    private Object getQuery(String query, PluginInteraction interaction)
     {
         return getQuery(query, interaction, null);
     }
     
-    private JSONObject getQuery(String query, PluginInteraction interaction, String cursor) {
+    private Object getQuery(String query, PluginInteraction interaction, String cursor) {
         JSONParser parser = new JSONParser();
         JSONObject obj = null;
         String c = "";
         if (cursor != null)
         {
-            c = String.format("&cursor=%s", cursor);
+            if (query.contains("?"))
+            {
+                c = String.format("&cursor=%s", UrlEscapers.urlFormParameterEscaper().escape(cursor));
+            }
+            else
+            {
+                c = String.format("?cursor=%s", UrlEscapers.urlFormParameterEscaper().escape(cursor));
+            }
+            
         }
 
         try {
@@ -180,7 +188,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                         interaction.notify(PluginNotificationLevel.FATAL, "Failed to query the VirusTotal web service " + ex.getMessage());
                     }
                     ex.printStackTrace();
-                    return null;
+                    return Boolean.FALSE;
                 }
 
                 try {
@@ -197,10 +205,13 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                                     
                                     if (cursor != null && !cursor.isEmpty())
                                     {
-                                        JSONObject o1 = getQuery(query, interaction, cursor);
+                                        JSONObject o1 = (JSONObject)getQuery(query, interaction, cursor);
                                         JSONArray a1 = (JSONArray)obj.get("data");
-                                        JSONArray a2 = (JSONArray)o1.get("data");
-                                        a1.addAll(a2);
+                                        if (o1 != null && o1.containsKey("data"))
+                                        {
+                                            JSONArray a2 = (JSONArray)o1.get("data");
+                                            a1.addAll(a2);
+                                        }
                                         obj.put("data", a1);
                                     }
                                 }
@@ -210,7 +221,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                             if (interaction != null) {
                                 interaction.notify(PluginNotificationLevel.FATAL, "Could not parse the VirusTotal web service response");
                             }
-                            return null;
+                            return Boolean.FALSE;
                         }
                     } 
                     else if (resp.getStatusLine().getStatusCode() == 204)
@@ -229,18 +240,33 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
 
                         return notFound;
                     }
+                    else if (resp.getStatusLine().getStatusCode() == 401)
+                    {
+                        interaction.notify(PluginNotificationLevel.FATAL, "Authentication error, please check your API key.");
+                        return Boolean.FALSE;
+                    }
+                    else if (resp.getStatusLine().getStatusCode() == 429)
+                    {
+                        interaction.notify(PluginNotificationLevel.FATAL, "Too many requests or quota exceeded.");
+                        return Boolean.FALSE;
+                    }
+                    else if (resp.getStatusLine().getStatusCode() == 403)
+                    {
+                        interaction.notify(PluginNotificationLevel.FATAL, "Unable to perform this action.");
+                        return Boolean.FALSE;
+                    }
                     else {
                         if (interaction != null) {
                             interaction.notify(PluginNotificationLevel.FATAL, "Could not access the VirusTotal web service error code " + resp.getStatusLine().getStatusCode());
                         }
-                        return null;
+                        return Boolean.FALSE;
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     if (interaction != null) {
                         interaction.notify(PluginNotificationLevel.FATAL, "Could not read from the VirusTotal web service.");
                     }
-                    return null;
+                    return Boolean.FALSE;
                 } catch (org.apache.http.ParseException ex) {
                     Exceptions.printStackTrace(ex);
                     return null;
@@ -633,7 +659,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
     }
     
     private void queryDomain(String domain, GraphRecordStore result, boolean showAVResults, PluginInteraction interaction) {
-        String url = String.format("%s/api/v3/domains/%s/communicating_files", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(domain));
+        String url = String.format("%s/api/v3/domains/%s", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(domain));
         Object r = getQuery(url, interaction);
         int count = 0;
 
@@ -644,9 +670,9 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         if (r == null || r instanceof Boolean) {
             return;
         }
-        JSONArray data = (JSONArray)((JSONObject)r).get("data");
+        JSONObject data = (JSONObject)((JSONObject)r).get("data");
         
-        if (data.isEmpty()) 
+        if (data==null) 
         {
             result.add();
             result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
@@ -655,18 +681,76 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         }
         else
         {
-            for (Object a : data)
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+            
+            JSONObject attributes = (JSONObject)data.get("attributes");
+            Long firstSeen = (Long)attributes.get("creation_date");
+            Long lastSeen = (Long)attributes.get("last_update_date");
+            if (firstSeen != null)
             {
-                JSONObject hash = (JSONObject)a;
+                result.set(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.FIRST_SEEN, TemporalFormatting.formatAsZonedDateTime(Instant.ofEpochSecond(firstSeen).atOffset(ZoneOffset.UTC)));   
+            }
+            if (lastSeen != null)
+            {
+                result.set(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.LAST_SEEN, TemporalFormatting.formatAsZonedDateTime(Instant.ofEpochSecond(lastSeen).atOffset(ZoneOffset.UTC)));
+            }
+            
+            // draw categories
+            JSONObject categories = (JSONObject)attributes.get("categories");
+            ArrayList<String> c = new ArrayList<>();
+            
+            for (Object k : categories.keySet())
+            {
+                String key = (String)k;
+                String value = (String)categories.get(key);
+                c.add(String.format("%s : %s", key, value));
+            }
+            result.set(GraphRecordStoreUtilities.SOURCE + CyberConcept.VertexAttribute.CATEGORY, String.join("\n", c));
 
-                result.add();
-                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
-                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
-                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+            // last analysis results
+            JSONObject lastAnalysisStats = (JSONObject)attributes.get("last_analysis_stats");
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.FAILURE_COUNT, (Long)lastAnalysisStats.get("failure"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.CONFIRMED_TIMEOUT_COUNT, (Long)lastAnalysisStats.get("confirmed-timeout"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HARMLESS_COUNT, (Long)lastAnalysisStats.get("harmless"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.MALICIOUS_COUNT, (Long)lastAnalysisStats.get("malicious"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.SUSPICIOUS_COUNT, (Long)lastAnalysisStats.get("suspicious"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.TIMEOUT_COUNT, (Long)lastAnalysisStats.get("timeout"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.TYPE_UNSUPPORTED_COUNT, (Long)lastAnalysisStats.get("type-unsupported"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.UNDETECTED_COUNT, (Long)lastAnalysisStats.get("undetected"));
+        
+            // now draw the relationships
+            url = String.format("%s/api/v3/domains/%s/communicating_files?limit=40", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(domain));
+            r = getQuery(url, interaction);
+            count = 0;
 
-                drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
-                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
-                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            while (r == null && !(r instanceof Boolean) && count < 2) {
+                r = getQuery(url, interaction);
+                count++;
+            }
+            if (r == null || r instanceof Boolean) {
+                return;
+            }
+            JSONArray data1 = (JSONArray)((JSONObject)r).get("data");
+
+            if (!data1.isEmpty()) 
+            {
+
+                for (Object a : data1)
+                {
+                    JSONObject hash = (JSONObject)a;
+
+                    result.add();
+                    result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
+                    result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
+                    result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+
+                    drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+                }
             }
         }
     }

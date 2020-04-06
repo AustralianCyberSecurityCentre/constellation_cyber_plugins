@@ -219,7 +219,7 @@ public class URLHausPlugin extends RecordStoreQueryPlugin implements DataAccessP
         String url = String.format("%s/v1/signature/", apiBase);
         String body = null;
 
-            body = String.format("signature=%s", signature);
+        body = String.format("signature=%s", signature);
         
         
         ProxySelector ps = ConstellationHttpProxySelector.getDefault();

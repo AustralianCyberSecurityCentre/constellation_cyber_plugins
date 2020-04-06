@@ -257,7 +257,7 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
                         .addGroup(maxmindPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(maxmindPnlLayout.createSequentialGroup()
                                 .addGroup(maxmindPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(maxmindConnectionTypeDB, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                                    .addComponent(maxmindConnectionTypeDB, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
                                     .addComponent(maxmindDomainDB))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(maxmindPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,7 +335,7 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(virusTotalPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(virusTotalAPIKey)
-                    .addComponent(virusTotalUrl, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
+                    .addComponent(virusTotalUrl, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE))
                 .addContainerGap())
         );
         virusTotalPnlLayout.setVerticalGroup(
@@ -366,7 +366,7 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(greyNoiseAPIKeyLbl)
                 .addGap(63, 63, 63)
-                .addComponent(greyNoiseAPIKey, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                .addComponent(greyNoiseAPIKey, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
                 .addContainerGap())
         );
         GreyNoisePnlLayout.setVerticalGroup(
@@ -393,7 +393,7 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(intezerAPIKeyLbl)
                 .addGap(63, 63, 63)
-                .addComponent(intezerAPIKey, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
+                .addComponent(intezerAPIKey, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
                 .addContainerGap())
         );
         IntezerPnlLayout.setVerticalGroup(
@@ -414,8 +414,8 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 935, Short.MAX_VALUE)
+                .addGap(37, 37, 37))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
