@@ -2,6 +2,7 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
     <info organisation="au.gov.asd.acsc" module="ACSC-utilities" revision="working"/>
     <dependencies>
-        <dependency org="com.maxmind.geoip2" name="geoip2" rev="2.12.0"/>     
+        <dependency org="com.maxmind.geoip2" name="geoip2" rev="2.12.0"/>
+        <dependency org="com.fooock" name="jshodan" rev="0.4.9"/>
     </dependencies>
 </ivy-module>

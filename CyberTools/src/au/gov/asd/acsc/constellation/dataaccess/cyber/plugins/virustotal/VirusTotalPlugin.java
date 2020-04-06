@@ -749,6 +749,40 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
 
                     drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
                     result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.COMMUNICATION);
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+                }
+            }
+            
+            // now draw the downloaded
+            url = String.format("%s/api/v3/domains/%s/downloaded_files?limit=40", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(domain));
+            r = getQuery(url, interaction);
+            count = 0;
+
+            while (r == null && !(r instanceof Boolean) && count < 2) {
+                r = getQuery(url, interaction);
+                count++;
+            }
+            if (r == null || r instanceof Boolean) {
+                return;
+            }
+             data1 = (JSONArray)((JSONObject)r).get("data");
+
+            if (!data1.isEmpty()) 
+            {
+
+                for (Object a : data1)
+                {
+                    JSONObject hash = (JSONObject)a;
+
+                    result.add();
+                    result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, domain);
+                    result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
+                    result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+
+                    drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, "Downloaded");
                     result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
                 }
             }
@@ -756,7 +790,8 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
     }
     
     private void queryIP(String ip, String type, GraphRecordStore result, boolean showAVResults, PluginInteraction interaction) {
-        String url = String.format("%s/api/v3/ip_addresses/%s/communicating_files", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(ip));
+        
+        String url = String.format("%s/api/v3/ip_addresses/%s", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(ip));
         Object r = getQuery(url, interaction);
         int count = 0;
 
@@ -767,10 +802,9 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         if (r == null || r instanceof Boolean) {
             return;
         }
+        JSONObject data = (JSONObject)((JSONObject)r).get("data");
         
-        JSONArray data = (JSONArray)((JSONObject)r).get("data");
-        
-        if (data.isEmpty()) 
+        if (data==null) 
         {
             result.add();
             result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
@@ -779,18 +813,97 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
         }
         else
         {
-            for (Object a : data)
+            result.add();
+            result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
+            result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+            
+            JSONObject attributes = (JSONObject)data.get("attributes");
+            Long lastSeen = (Long)attributes.get("last_modification_date");
+
+            if (lastSeen != null)
             {
-                JSONObject hash = (JSONObject)a;
+                result.set(GraphRecordStoreUtilities.SOURCE + TemporalConcept.VertexAttribute.LAST_SEEN, TemporalFormatting.formatAsZonedDateTime(Instant.ofEpochSecond(lastSeen).atOffset(ZoneOffset.UTC)));
+            }
 
-                result.add();
-                result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
-                result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
-                result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
+            // last analysis results
+            JSONObject lastAnalysisStats = (JSONObject)attributes.get("last_analysis_stats");
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.FAILURE_COUNT, (Long)lastAnalysisStats.get("failure"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.CONFIRMED_TIMEOUT_COUNT, (Long)lastAnalysisStats.get("confirmed-timeout"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HARMLESS_COUNT, (Long)lastAnalysisStats.get("harmless"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.MALICIOUS_COUNT, (Long)lastAnalysisStats.get("malicious"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.SUSPICIOUS_COUNT, (Long)lastAnalysisStats.get("suspicious"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.TIMEOUT_COUNT, (Long)lastAnalysisStats.get("timeout"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.TYPE_UNSUPPORTED_COUNT, (Long)lastAnalysisStats.get("type-unsupported"));
+            result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.UNDETECTED_COUNT, (Long)lastAnalysisStats.get("undetected"));
+        
+            
+            // communicating files.
+            url = String.format("%s/api/v3/ip_addresses/%s/communicating_files", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(ip));
+            r = getQuery(url, interaction);
+            count = 0;
 
-                drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
-                result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
-                result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+            while (r == null && !(r instanceof Boolean) && count < 2) {
+                r = getQuery(url, interaction);
+                count++;
+            }
+            if (r == null || r instanceof Boolean) {
+                return;
+            }
+
+            JSONArray data1 = (JSONArray)((JSONObject)r).get("data");
+
+            if (!data1.isEmpty()) 
+            {
+
+                for (Object a : data1)
+                {
+                    JSONObject hash = (JSONObject)a;
+
+                    result.add();
+                    result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
+                    result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                    result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
+
+                    drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.COMMUNICATION);
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+                }
+            }
+            
+            // downloaded files.
+            url = String.format("%s/api/v3/ip_addresses/%s/downloaded_files", VT_URL, UrlEscapers.urlFormParameterEscaper().escape(ip));
+            r = getQuery(url, interaction);
+            count = 0;
+
+            while (r == null && !(r instanceof Boolean) && count < 2) {
+                r = getQuery(url, interaction);
+                count++;
+            }
+            if (r == null || r instanceof Boolean) {
+                return;
+            }
+
+            data1 = (JSONArray)((JSONObject)r).get("data");
+
+            if (!data1.isEmpty()) 
+            {
+
+                for (Object a : data1)
+                {
+                    JSONObject hash = (JSONObject)a;
+
+                    result.add();
+                    result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, ip);
+                    result.set(GraphRecordStoreUtilities.SOURCE + VirusTotalConcept.VertexAttribute.HAS_VIRUS_TOTAL_ENTRY, true);
+                    result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, type);
+
+                    drawHash(GraphRecordStoreUtilities.DESTINATION, result, hash, showAVResults);
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.COLOR, "Blue");
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, "Downloaded");
+                    result.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.COMPLETE_WITH_SCHEMA_KEY, "false");   
+                }
             }
         }
     }
