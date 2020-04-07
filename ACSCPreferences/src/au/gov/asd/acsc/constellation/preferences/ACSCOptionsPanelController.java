@@ -55,7 +55,7 @@ public final class ACSCOptionsPanelController extends OptionsPanelController {
         acscOptionsPanel.setVirusTotalAPIKey(prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, ""));
         acscOptionsPanel.setGreyNoiseAPIKey(prefs.get(ACSCPreferenceKeys.GREYNOISE_API_KEY, ""));
         acscOptionsPanel.setIntezerAPIKey(prefs.get(ACSCPreferenceKeys.INTEZER_API_KEY, ""));
-
+        acscOptionsPanel.setShodanAPIKey(prefs.get(ACSCPreferenceKeys.SHODAN_API_KEY, ""));
     }
 
     @Override
@@ -80,6 +80,7 @@ public final class ACSCOptionsPanelController extends OptionsPanelController {
                 prefs.put(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, acscOptionsPanel.getVirusTotalAPIKey());
                 prefs.put(ACSCPreferenceKeys.GREYNOISE_API_KEY, acscOptionsPanel.getGreyNoiseAPIKey());
                 prefs.put(ACSCPreferenceKeys.INTEZER_API_KEY, acscOptionsPanel.getIntezerAPIKey());
+                prefs.put(ACSCPreferenceKeys.SHODAN_API_KEY, acscOptionsPanel.getShodanAPIKey());
             }
         }
     }
@@ -108,6 +109,7 @@ public final class ACSCOptionsPanelController extends OptionsPanelController {
                 && (acscOptionsPanel.getVirusTotalAPIKey() == null ? prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, "") == null : acscOptionsPanel.getVirusTotalAPIKey().equals(prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, "")))
                 && (acscOptionsPanel.getGreyNoiseAPIKey() == null ? prefs.get(ACSCPreferenceKeys.GREYNOISE_API_KEY, "") == null : acscOptionsPanel.getGreyNoiseAPIKey().equals(prefs.get(ACSCPreferenceKeys.GREYNOISE_API_KEY, "")))
                 && (acscOptionsPanel.getIntezerAPIKey() == null ? prefs.get(ACSCPreferenceKeys.INTEZER_API_KEY, "") == null : acscOptionsPanel.getIntezerAPIKey().equals(prefs.get(ACSCPreferenceKeys.INTEZER_API_KEY, "")))
+                && (acscOptionsPanel.getShodanAPIKey() == null ? prefs.get(ACSCPreferenceKeys.SHODAN_API_KEY, "") == null : acscOptionsPanel.getShodanAPIKey().equals(prefs.get(ACSCPreferenceKeys.SHODAN_API_KEY, "")))
                 && (acscOptionsPanel.getMaxmindConnectionTypeDB() == null ? prefs.get(ACSCPreferenceKeys.MAXMIND_CONNECTION_TYPE_DIR, "") == null : acscOptionsPanel.getMaxmindConnectionTypeDB().equals(prefs.get(ACSCPreferenceKeys.MAXMIND_CONNECTION_TYPE_DIR, ""))));
 
         return changed;

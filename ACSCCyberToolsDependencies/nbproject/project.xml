@@ -39,11 +39,72 @@
                 <package>com.fasterxml.jackson.databind.ser.std</package>
                 <package>com.fasterxml.jackson.databind.type</package>
                 <package>com.fasterxml.jackson.databind.util</package>
+                <package>com.fooock.shodan</package>
+                <package>com.fooock.shodan.model</package>
+                <package>com.fooock.shodan.model.banner</package>
+                <package>com.fooock.shodan.model.dns</package>
+                <package>com.fooock.shodan.model.exploit</package>
+                <package>com.fooock.shodan.model.host</package>
+                <package>com.fooock.shodan.model.protocol</package>
+                <package>com.fooock.shodan.model.query</package>
+                <package>com.fooock.shodan.model.tag</package>
+                <package>com.fooock.shodan.model.token</package>
+                <package>com.fooock.shodan.model.user</package>
+                <package>com.google.gson</package>
+                <package>com.google.gson.annotations</package>
+                <package>com.google.gson.internal</package>
+                <package>com.google.gson.internal.bind</package>
+                <package>com.google.gson.internal.bind.util</package>
+                <package>com.google.gson.reflect</package>
+                <package>com.google.gson.stream</package>
                 <package>com.maxmind.db</package>
                 <package>com.maxmind.geoip2</package>
                 <package>com.maxmind.geoip2.exception</package>
                 <package>com.maxmind.geoip2.model</package>
                 <package>com.maxmind.geoip2.record</package>
+                <package>io.reactivex</package>
+                <package>io.reactivex.annotations</package>
+                <package>io.reactivex.disposables</package>
+                <package>io.reactivex.exceptions</package>
+                <package>io.reactivex.flowables</package>
+                <package>io.reactivex.functions</package>
+                <package>io.reactivex.internal.disposables</package>
+                <package>io.reactivex.internal.functions</package>
+                <package>io.reactivex.internal.fuseable</package>
+                <package>io.reactivex.internal.observers</package>
+                <package>io.reactivex.internal.operators.completable</package>
+                <package>io.reactivex.internal.operators.flowable</package>
+                <package>io.reactivex.internal.operators.maybe</package>
+                <package>io.reactivex.internal.operators.observable</package>
+                <package>io.reactivex.internal.operators.parallel</package>
+                <package>io.reactivex.internal.operators.single</package>
+                <package>io.reactivex.internal.queue</package>
+                <package>io.reactivex.internal.schedulers</package>
+                <package>io.reactivex.internal.subscribers</package>
+                <package>io.reactivex.internal.subscriptions</package>
+                <package>io.reactivex.internal.util</package>
+                <package>io.reactivex.observables</package>
+                <package>io.reactivex.observers</package>
+                <package>io.reactivex.parallel</package>
+                <package>io.reactivex.plugins</package>
+                <package>io.reactivex.processors</package>
+                <package>io.reactivex.schedulers</package>
+                <package>io.reactivex.subjects</package>
+                <package>io.reactivex.subscribers</package>
+                <package>okhttp3</package>
+                <package>okhttp3.internal</package>
+                <package>okhttp3.internal.cache</package>
+                <package>okhttp3.internal.cache2</package>
+                <package>okhttp3.internal.connection</package>
+                <package>okhttp3.internal.http</package>
+                <package>okhttp3.internal.http1</package>
+                <package>okhttp3.internal.http2</package>
+                <package>okhttp3.internal.io</package>
+                <package>okhttp3.internal.platform</package>
+                <package>okhttp3.internal.publicsuffix</package>
+                <package>okhttp3.internal.tls</package>
+                <package>okhttp3.internal.ws</package>
+                <package>okio</package>
                 <package>org.apache.commons.codec</package>
                 <package>org.apache.commons.codec.binary</package>
                 <package>org.apache.commons.codec.digest</package>
@@ -93,18 +154,31 @@
                 <package>org.apache.http.protocol</package>
                 <package>org.apache.http.ssl</package>
                 <package>org.apache.http.util</package>
+                <package>org.reactivestreams</package>
+                <package>retrofit2</package>
+                <package>retrofit2.adapter.rxjava2</package>
+                <package>retrofit2.converter.gson</package>
+                <package>retrofit2.http</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-databind-2.9.5.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-databind-2.9.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/httpclient-4.5.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/httpclient-4.5.5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/geoip2-2.12.0-javadoc.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/geoip2-2.12.0-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/okhttp-3.8.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/okhttp-3.8.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/converter-gson-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/converter-gson-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gson-2.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gson-2.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-core-2.9.5.jar</runtime-relative-path>
@@ -119,24 +193,60 @@
                 <binary-origin>release/modules/ext/geoip2-2.12.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/maxmind-db-1.2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/maxmind-db-1.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/httpcore-4.4.9.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/httpcore-4.4.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-annotations-2.9.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-annotations-2.9.5.jar</binary-origin>
+                <runtime-relative-path>ext/maxmind-db-1.2.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/maxmind-db-1.2.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/reactive-streams-1.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/reactive-streams-1.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.10.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-codec-1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jackson-annotations-2.9.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.9.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jshodan-0.4.9-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jshodan-0.4.9-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/httpclient-4.5.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/httpclient-4.5.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jshodan-0.4.9-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jshodan-0.4.9-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/adapter-rxjava2-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/adapter-rxjava2-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/retrofit-2.3.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/retrofit-2.3.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/rxjava-2.1.8.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/rxjava-2.1.8.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jshodan-0.4.9.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jshodan-0.4.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/geoip2-2.12.0-sources.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/geoip2-2.12.0-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/okio-1.13.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/okio-1.13.0.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

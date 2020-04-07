@@ -35,6 +35,8 @@ public final class ACSCPreferenceKeys {
     public static final String GREYNOISE_API_KEY = "greyNoiseAPIKey";
     
     public static final String INTEZER_API_KEY = "intezerAPIKey";
+    
+    public static final String SHODAN_API_KEY = "shodanAPIKey";
 
     private ACSCPreferenceKeys() {
     }

@@ -27,6 +27,14 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
         initComponents();
     }
     
+    public String getShodanAPIKey() {
+        return shodanAPIKey.getText();
+    }
+
+    public void setShodanAPIKey(final String apiKey) {
+        shodanAPIKey.setText(apiKey);
+    }
+    
     public String getIntezerAPIKey() {
         return intezerAPIKey.getText();
     }
@@ -156,6 +164,9 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
         IntezerPnl = new javax.swing.JPanel();
         intezerAPIKeyLbl = new javax.swing.JLabel();
         intezerAPIKey = new javax.swing.JTextField();
+        ShodanPnl = new javax.swing.JPanel();
+        shodanAPIKeyLbl = new javax.swing.JLabel();
+        shodanAPIKey = new javax.swing.JTextField();
 
         org.openide.awt.Mnemonics.setLocalizedText(maxmindUserIdLbl, org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.maxmindUserIdLbl.text")); // NOI18N
 
@@ -408,13 +419,40 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.IntezerPnl.TabConstraints.tabTitle"), IntezerPnl); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(shodanAPIKeyLbl, org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.shodanAPIKeyLbl.text")); // NOI18N
+
+        shodanAPIKey.setText(org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.shodanAPIKey.text")); // NOI18N
+
+        javax.swing.GroupLayout ShodanPnlLayout = new javax.swing.GroupLayout(ShodanPnl);
+        ShodanPnl.setLayout(ShodanPnlLayout);
+        ShodanPnlLayout.setHorizontalGroup(
+            ShodanPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ShodanPnlLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(shodanAPIKeyLbl)
+                .addGap(63, 63, 63)
+                .addComponent(shodanAPIKey, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        ShodanPnlLayout.setVerticalGroup(
+            ShodanPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ShodanPnlLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(ShodanPnlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(shodanAPIKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(shodanAPIKeyLbl))
+                .addContainerGap(316, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(ACSCOptionsPanel.class, "ACSCOptionsPanel.ShodanPnl.TabConstraints.tabTitle"), ShodanPnl); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 935, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addGap(37, 37, 37))
         );
         layout.setVerticalGroup(
@@ -494,6 +532,7 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel GreyNoisePnl;
     private javax.swing.JPanel IntezerPnl;
+    private javax.swing.JPanel ShodanPnl;
     private javax.swing.JTextField greyNoiseAPIKey;
     private javax.swing.JLabel greyNoiseAPIKeyLbl;
     private javax.swing.JTextField intezerAPIKey;
@@ -519,6 +558,8 @@ public class ACSCOptionsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel maxmindPnl;
     private javax.swing.JTextField maxmindUserId;
     private javax.swing.JLabel maxmindUserIdLbl;
+    private javax.swing.JTextField shodanAPIKey;
+    private javax.swing.JLabel shodanAPIKeyLbl;
     private javax.swing.JTextField virusTotalAPIKey;
     private javax.swing.JLabel virusTotalAPIKeyLbl;
     private javax.swing.JPanel virusTotalPnl;

@@ -140,6 +140,14 @@ public class CyberConcept extends SchemaConcept {
         public static final SchemaVertexType STRING = new SchemaVertexType.Builder("String")
                 .setForegroundIcon(CharacterIconProvider.CHAR_0065)
                 .build();
+        
+        public static final SchemaVertexType SERVICE = new SchemaVertexType.Builder("Service")
+                .setForegroundIcon(AnalyticIconProvider.SERVER)
+                .build();
+        
+        public static final SchemaVertexType CERTIFICATE = new SchemaVertexType.Builder("Certificate")
+                .setForegroundIcon(AnalyticIconProvider.IDENTIFICATION)
+                .build();
 
     }
 
@@ -210,6 +218,8 @@ public class CyberConcept extends SchemaConcept {
         schemaVertexTypes.add(VertexType.SIGNATURE);
         schemaVertexTypes.add(VertexType.FEATURE);
         schemaVertexTypes.add(VertexType.STRING);
+        schemaVertexTypes.add(VertexType.SERVICE);
+        schemaVertexTypes.add(VertexType.CERTIFICATE);
         return Collections.unmodifiableList(schemaVertexTypes);
     }
 

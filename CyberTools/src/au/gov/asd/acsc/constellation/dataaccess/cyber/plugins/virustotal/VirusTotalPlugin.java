@@ -920,6 +920,13 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
 
         VT_URL = prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_URL, "");
         VT_API_KEY = prefs.get(ACSCPreferenceKeys.VIRUS_TOTAL_API_KEY, "");
+        
+        if (VT_API_KEY == null || VT_API_KEY.isEmpty())
+        {
+            interaction.notify(PluginNotificationLevel.FATAL, "The API key has not been set.\nPlease update these at Setup > Options > CONSTELLATION > ACSC > VirusTotal");
+            return result;
+        }
+        
 
         if (VT_URL == null || VT_URL.isEmpty()) {
             VT_URL = "https://virustotal.com";

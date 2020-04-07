@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: true
 OpenIDE-Module: au.gov.asd.acsc.constellation.dataaccess.cybertools
 OpenIDE-Module-Localizing-Bundle: au/gov/asd/acsc/constellation/dataaccess/cybertools/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0.18
+OpenIDE-Module-Specification-Version: 1.0.19
 
