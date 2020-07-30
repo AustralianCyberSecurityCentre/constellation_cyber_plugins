@@ -15,11 +15,11 @@
  */
 package au.gov.asd.acsc.constellation.schema.cyberschema.concept;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.CharacterIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import java.util.HashMap;
 import java.util.Map;
 
