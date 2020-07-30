@@ -15,9 +15,9 @@
  */
 package au.gov.asd.acsc.constellation.schema.cyberschema.icons;
 
-import au.gov.asd.tac.constellation.visual.icons.ByteIconData;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.ByteIconData;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIconProvider;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

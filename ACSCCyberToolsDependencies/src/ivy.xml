@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-    <info organisation="au.gov.asd.acsc" module="ACSC-utilities" revision="working"/>
-    <dependencies>
-        <dependency org="com.maxmind.geoip2" name="geoip2" rev="2.12.0"/>     
+    <info organisation="au.gov.asd.acsc" module="ACSC-utilities"/>
+        
+    <configurations defaultconfmapping="*->default,master">
+        <conf name="compile" description="Compile-time dependencies" visibility="public"/>
+        <conf name="runtime" description="Runtime dependencies" visibility="public" extends="compile"/>
+        <conf name="test" description="Test dependencies" visibility="public" extends="runtime"/>
+        <conf name="provided" description="Provided dependencies" visibility="public"/>
+    </configurations>
+    
+    <dependencies defaultconf="runtime">
+        <dependency org="com.maxmind.geoip2" name="geoip2" rev="2.12.0"/>
+        
+        <exclude type="source" ext="jar" conf="*"/>
+        <exclude type="javadoc" ext="jar" conf="*"/>
+        <exclude type="license" ext="txt" conf="*"/>
     </dependencies>
 </ivy-module>
