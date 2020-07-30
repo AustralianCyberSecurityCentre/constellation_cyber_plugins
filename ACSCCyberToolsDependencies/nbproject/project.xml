@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://www.netbeans.org/ns/project/1">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
@@ -95,20 +94,8 @@
                 <package>org.apache.http.util</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-databind-2.9.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-databind-2.9.5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/httpclient-4.5.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/httpclient-4.5.5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/geoip2-2.12.0-javadoc.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/geoip2-2.12.0-javadoc.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jackson-core-2.9.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-core-2.9.5.jar</binary-origin>
+                <runtime-relative-path>ext/commons-codec-1.10.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-codec-1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-logging-1.2.jar</runtime-relative-path>
@@ -119,8 +106,8 @@
                 <binary-origin>release/modules/ext/geoip2-2.12.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/maxmind-db-1.2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/maxmind-db-1.2.2.jar</binary-origin>
+                <runtime-relative-path>ext/httpclient-4.5.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/httpclient-4.5.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/httpcore-4.4.9.jar</runtime-relative-path>
@@ -131,12 +118,16 @@
                 <binary-origin>release/modules/ext/jackson-annotations-2.9.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-codec-1.10.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-codec-1.10.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-core-2.9.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.9.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/geoip2-2.12.0-sources.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/geoip2-2.12.0-sources.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-databind-2.9.5.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.9.5.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/maxmind-db-1.2.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/maxmind-db-1.2.2.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
