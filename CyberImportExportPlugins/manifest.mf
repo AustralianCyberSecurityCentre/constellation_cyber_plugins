@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: au.gov.asd.acsc.constellation.plugins.importexport
+OpenIDE-Module-Localizing-Bundle: au/gov/asd/acsc/constellation/plugins/importexport/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

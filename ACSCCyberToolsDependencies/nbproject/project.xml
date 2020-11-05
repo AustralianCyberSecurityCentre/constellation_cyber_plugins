@@ -38,11 +38,78 @@
                 <package>com.fasterxml.jackson.databind.ser.std</package>
                 <package>com.fasterxml.jackson.databind.type</package>
                 <package>com.fasterxml.jackson.databind.util</package>
+                <package>com.google.common.annotations</package>
+                <package>com.google.common.base</package>
+                <package>com.google.common.base.internal</package>
+                <package>com.google.common.cache</package>
+                <package>com.google.common.collect</package>
+                <package>com.google.common.escape</package>
+                <package>com.google.common.eventbus</package>
+                <package>com.google.common.graph</package>
+                <package>com.google.common.hash</package>
+                <package>com.google.common.html</package>
+                <package>com.google.common.io</package>
+                <package>com.google.common.math</package>
+                <package>com.google.common.net</package>
+                <package>com.google.common.primitives</package>
+                <package>com.google.common.reflect</package>
+                <package>com.google.common.util.concurrent</package>
+                <package>com.google.common.util.concurrent.internal</package>
+                <package>com.google.common.xml</package>
+                <package>com.google.errorprone.annotations</package>
+                <package>com.google.errorprone.annotations.concurrent</package>
+                <package>com.google.j2objc.annotations</package>
+                <package>com.google.polo.pairing</package>
+                <package>com.google.thirdparty.publicsuffix</package>
                 <package>com.maxmind.db</package>
                 <package>com.maxmind.geoip2</package>
                 <package>com.maxmind.geoip2.exception</package>
                 <package>com.maxmind.geoip2.model</package>
                 <package>com.maxmind.geoip2.record</package>
+                <package>gov.nist.core</package>
+                <package>gov.nist.core.net</package>
+                <package>gov.nist.javax.sdp</package>
+                <package>gov.nist.javax.sdp.fields</package>
+                <package>gov.nist.javax.sdp.parser</package>
+                <package>gov.nist.javax.sip</package>
+                <package>gov.nist.javax.sip.address</package>
+                <package>gov.nist.javax.sip.clientauthutils</package>
+                <package>gov.nist.javax.sip.header</package>
+                <package>gov.nist.javax.sip.header.extensions</package>
+                <package>gov.nist.javax.sip.header.ims</package>
+                <package>gov.nist.javax.sip.message</package>
+                <package>gov.nist.javax.sip.parser</package>
+                <package>gov.nist.javax.sip.parser.extensions</package>
+                <package>gov.nist.javax.sip.parser.ims</package>
+                <package>gov.nist.javax.sip.stack</package>
+                <package>gov.nist.javax.sip.stack.timers</package>
+                <package>io.pkts</package>
+                <package>io.pkts.buffer</package>
+                <package>io.pkts.filters</package>
+                <package>io.pkts.frame</package>
+                <package>io.pkts.framer</package>
+                <package>io.pkts.packet</package>
+                <package>io.pkts.packet.impl</package>
+                <package>io.pkts.packet.rtcp</package>
+                <package>io.pkts.packet.rtcp.impl</package>
+                <package>io.pkts.packet.rtp</package>
+                <package>io.pkts.packet.rtp.impl</package>
+                <package>io.pkts.packet.sip</package>
+                <package>io.pkts.packet.sip.address</package>
+                <package>io.pkts.packet.sip.address.impl</package>
+                <package>io.pkts.packet.sip.header</package>
+                <package>io.pkts.packet.sip.header.impl</package>
+                <package>io.pkts.packet.sip.impl</package>
+                <package>io.pkts.protocol</package>
+                <package>io.pkts.sdp</package>
+                <package>io.pkts.sdp.impl</package>
+                <package>io.pkts.streams</package>
+                <package>io.pkts.streams.impl</package>
+                <package>io.pkts.tools</package>
+                <package>javax.annotation</package>
+                <package>javax.annotation.concurrent</package>
+                <package>javax.annotation.meta</package>
+                <package>javax.sdp</package>
                 <package>org.apache.commons.codec</package>
                 <package>org.apache.commons.codec.binary</package>
                 <package>org.apache.commons.codec.digest</package>
@@ -92,42 +159,165 @@
                 <package>org.apache.http.protocol</package>
                 <package>org.apache.http.ssl</package>
                 <package>org.apache.http.util</package>
+                <package>org.apache.log4j</package>
+                <package>org.apache.log4j.chainsaw</package>
+                <package>org.apache.log4j.config</package>
+                <package>org.apache.log4j.helpers</package>
+                <package>org.apache.log4j.jdbc</package>
+                <package>org.apache.log4j.jmx</package>
+                <package>org.apache.log4j.lf5</package>
+                <package>org.apache.log4j.lf5.util</package>
+                <package>org.apache.log4j.lf5.viewer</package>
+                <package>org.apache.log4j.lf5.viewer.categoryexplorer</package>
+                <package>org.apache.log4j.lf5.viewer.configure</package>
+                <package>org.apache.log4j.net</package>
+                <package>org.apache.log4j.nt</package>
+                <package>org.apache.log4j.or</package>
+                <package>org.apache.log4j.or.jms</package>
+                <package>org.apache.log4j.or.sax</package>
+                <package>org.apache.log4j.spi</package>
+                <package>org.apache.log4j.varia</package>
+                <package>org.apache.log4j.xml</package>
+                <package>org.checkerframework.checker.compilermsgs.qual</package>
+                <package>org.checkerframework.checker.fenum.qual</package>
+                <package>org.checkerframework.checker.formatter</package>
+                <package>org.checkerframework.checker.formatter.qual</package>
+                <package>org.checkerframework.checker.guieffect.qual</package>
+                <package>org.checkerframework.checker.i18n.qual</package>
+                <package>org.checkerframework.checker.i18nformatter</package>
+                <package>org.checkerframework.checker.i18nformatter.qual</package>
+                <package>org.checkerframework.checker.index.qual</package>
+                <package>org.checkerframework.checker.initialization.qual</package>
+                <package>org.checkerframework.checker.interning.qual</package>
+                <package>org.checkerframework.checker.lock.qual</package>
+                <package>org.checkerframework.checker.nullness</package>
+                <package>org.checkerframework.checker.nullness.qual</package>
+                <package>org.checkerframework.checker.optional.qual</package>
+                <package>org.checkerframework.checker.propkey.qual</package>
+                <package>org.checkerframework.checker.regex</package>
+                <package>org.checkerframework.checker.regex.qual</package>
+                <package>org.checkerframework.checker.signature.qual</package>
+                <package>org.checkerframework.checker.signedness</package>
+                <package>org.checkerframework.checker.signedness.qual</package>
+                <package>org.checkerframework.checker.tainting.qual</package>
+                <package>org.checkerframework.checker.units</package>
+                <package>org.checkerframework.checker.units.qual</package>
+                <package>org.checkerframework.common.aliasing.qual</package>
+                <package>org.checkerframework.common.reflection.qual</package>
+                <package>org.checkerframework.common.subtyping.qual</package>
+                <package>org.checkerframework.common.util.report.qual</package>
+                <package>org.checkerframework.common.value.qual</package>
+                <package>org.checkerframework.dataflow.qual</package>
+                <package>org.checkerframework.framework.qual</package>
+                <package>org.checkerframework.framework.util</package>
+                <package>org.slf4j</package>
+                <package>org.slf4j.helpers</package>
+                <package>org.slf4j.impl</package>
+                <package>org.slf4j.spi</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-codec-1.10.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-codec-1.10.jar</binary-origin>
+                <runtime-relative-path>ext/checker-qual-2.10.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/checker-qual-2.10.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-logging-1.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-logging-1.2.jar</binary-origin>
+                <runtime-relative-path>ext/commons-codec-1.10-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-codec-1.10-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/geoip2-2.12.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/geoip2-2.12.0.jar</binary-origin>
+                <runtime-relative-path>ext/commons-logging-1.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-logging-1.2-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/httpclient-4.5.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/httpclient-4.5.5.jar</binary-origin>
+                <runtime-relative-path>ext/error_prone_annotations-2.3.4-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/error_prone_annotations-2.3.4-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/httpcore-4.4.9.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/httpcore-4.4.9.jar</binary-origin>
+                <runtime-relative-path>ext/failureaccess-1.0.1-bundle.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/failureaccess-1.0.1-bundle.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-annotations-2.9.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-annotations-2.9.5.jar</binary-origin>
+                <runtime-relative-path>ext/geoip2-2.12.0-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/geoip2-2.12.0-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-core-2.9.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-core-2.9.5.jar</binary-origin>
+                <runtime-relative-path>ext/guava-28.2-jre-bundle.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/guava-28.2-jre-bundle.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-databind-2.9.5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-databind-2.9.5.jar</binary-origin>
+                <runtime-relative-path>ext/httpclient-4.5.5-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/httpclient-4.5.5-jar.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/maxmind-db-1.2.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/maxmind-db-1.2.2.jar</binary-origin>
+                <runtime-relative-path>ext/httpcore-4.4.9-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/httpcore-4.4.9-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/j2objc-annotations-1.3-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/j2objc-annotations-1.3-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-annotations-2.9.5-bundle.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.9.5-bundle.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-core-2.9.5-bundle.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.9.5-bundle.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-databind-2.9.5-bundle.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.9.5-bundle.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jain-sip-ri-1.2.159-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jain-sip-ri-1.2.159-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jsr305-3.0.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jsr305-3.0.2-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/log4j-1.2.14-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/log4j-1.2.14-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/maxmind-db-1.2.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/maxmind-db-1.2.2-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pkts-buffers-3.0.7-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pkts-buffers-3.0.7-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pkts-core-3.0.7-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pkts-core-3.0.7-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pkts-sdp-3.0.7-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pkts-sdp-3.0.7-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pkts-sip-3.0.7-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pkts-sip-3.0.7-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pkts-streams-3.0.7-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pkts-streams-3.0.7-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/pkts-tools-3.0.7-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/pkts-tools-3.0.7-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/slf4j-api-1.7.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-api-1.7.2-jar.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/slf4j-log4j12-1.7.2-jar.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-log4j12-1.7.2-jar.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
