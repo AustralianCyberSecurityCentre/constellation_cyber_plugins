@@ -9,3 +9,6 @@
 /CyberTools/build/
 project_old.xml
 /CyberTools/nbproject/private/
+/CyberImportExportPlugins/nbproject/private/
+/CyberImportExportPlugins/build/
+/ACSCPreferences/nbproject/private/
