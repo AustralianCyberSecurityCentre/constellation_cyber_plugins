@@ -15,7 +15,7 @@ The enrichments that are available in these plugins are:
 
 # Setup
 These plugins are dependant on the constellation core repository (https://github.com/constellation-app/constellation).  Please clone this repository first and make sure that you add the cloned location to the ACSCCyberTools project properties.
-This can be done by right clicking the module suite "ACSCCyberTools" and selecting Properties option, then choose Libraries and press the "Add Cluster" button.
+This can be done by right clicking the module suite "ACSCCyberTools" and selecting Properties option, then choose Libraries and press the "Add Project" button.
 
 # Copyright and License
 © Commonwealth of Australia 2020
