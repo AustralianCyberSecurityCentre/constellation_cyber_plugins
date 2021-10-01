@@ -32,8 +32,8 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.security.proxy.ConstellationHttpProxySelector;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import com.google.common.net.UrlEscapers;
 import java.io.IOException;
@@ -311,7 +311,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                             result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, nodeKey);
                             result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, VirusTotalConcept.VertexType.AV_RESULT);
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.AV_ENGINE, key.toString());
-                            result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, PLUGIN_NAME);
+                            result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, pluginName);
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.DETECTED, (boolean) scan.get("detected"));
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.RESULT, (String) scan.get("result"));
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.VERSION, (String) scan.get("version"));
