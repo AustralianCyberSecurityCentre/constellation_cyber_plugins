@@ -2,6 +2,8 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Graph">
-        <tocitem text="Cyber Types" target="au.gov.asd.acsc.constellation.schema.cyberschema.types"/>
+        <tocitem text="Graph Overview">
+            <tocitem text="Types - Cyber" target="au.gov.asd.acsc.constellation.schema.cyberschema.types"/>
+        </tocitem>
     </tocitem>
 </toc>

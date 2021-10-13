@@ -311,7 +311,7 @@ public class VirusTotalPlugin extends RecordStoreQueryPlugin implements DataAcce
                             result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, nodeKey);
                             result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, VirusTotalConcept.VertexType.AV_RESULT);
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.AV_ENGINE, key.toString());
-                            result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, PLUGIN_NAME);
+                            result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.SOURCE, pluginName);
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.DETECTED, (boolean) scan.get("detected"));
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.RESULT, (String) scan.get("result"));
                             result.set(GraphRecordStoreUtilities.DESTINATION + VirusTotalConcept.VertexAttribute.VERSION, (String) scan.get("version"));
